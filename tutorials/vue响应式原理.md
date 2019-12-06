@@ -1,0 +1,10 @@
+# vue响应式原理
+官网解释;当你把一个普通的js对象传给Vue实例的data选项，vue将遍历此对象所有属性，并使用Object.defineProperty把这些属性全部转换为getter/setter。Object.defineProperty是ES5中一个无法shim的特性，这也就是为什么vue不支持IE8以及更低版本浏览器的原因。
+
+这些getter/setter对用户来说是不可见的，但是在内部他们让Vue追踪依赖，在属性被访问和修改时通知变化。
+
+每个组件实例都有相应的watcher实例对象，他会在组件渲染过程中把属性记录为依赖，之后当依赖项的setter被调用时，会通知watcher重新计算，从而致使他关联的组件得以更新。
+
+> 这里特别说明一下
+其实看过api源码的人不难知道，v-model响应式原理共分两层
+第一层，底层，就是es5的一个特性Object.defineProperty通过getter,setter更新数据，第二层，表现层，看过v-model原理的人都知道，v-model里面有一个watcher,v-on。watcher监听数据变化，v-on更新到视图中，相信好多人在实战中都用过v-on来更新数据。
